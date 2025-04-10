@@ -32,4 +32,4 @@ RUN pip3 install --no-cache-dir -r /app/requirements.txt
 COPY . /app
 WORKDIR /app
 
-CMD ["python3", "test.py"]
+CMD ["python3", "app/main.py"]

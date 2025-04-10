@@ -1,1 +1,3 @@
 python-telegram
+psycopg2-binary
+SQLAlchemy
