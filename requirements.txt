@@ -2,3 +2,5 @@ python-telegram
 psycopg2-binary
 SQLAlchemy
 schedule
+fastapi
+uvicorn[standard]

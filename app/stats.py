@@ -1,6 +1,14 @@
 from sqlalchemy import func
-from models import Message
+from models import Message, UserStats
 from db import Session
+
+_stats_snapshot = {}
+
+def get_current_stats():
+    return {
+        user_id: stats.to_dict()
+        for user_id, stats in _stats_snapshot.items()
+    }
 
 def collect_stats():
     session = Session()
@@ -11,12 +19,13 @@ def collect_stats():
             func.count(func.distinct(Message.chat_id)).label("chat_count")
         ).group_by(Message.user_id).all()
 
-        stats = {
-            user_id: {"message_count": message_count, "chat_count": chat_count} #todo maybe model for this
+        global _stats_snapshot
+        _stats_snapshot = {
+            user_id: UserStats(user_id, message_count, chat_count)
             for user_id, message_count, chat_count in results
         }
 
-        print("📊 Stats collected:", stats) #todo if many ids remove print, its just for test
-        return stats
+        print("📊 Stats collected:", get_current_stats())
+        return get_current_stats()
     finally:
         session.close()
