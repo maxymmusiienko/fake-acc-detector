@@ -1,8 +1,19 @@
 import os
+import schedule
+import threading
+import time
 from telegram.client import Telegram, AuthorizationState
 from handler import make_handler
 from models import Base
 from db import engine
+from stats import collect_stats
+
+def run_scheduler():
+    schedule.every(1).minutes.do(collect_stats)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 
 # Create tables if needed
 Base.metadata.create_all(engine)
@@ -27,8 +38,10 @@ if state == AuthorizationState.WAIT_PASSWORD:
     state = tg.login(blocking=False)
 
 tg.add_message_handler(make_handler(tg))
+threading.Thread(target=run_scheduler, daemon=True).start()
 tg.idle()
 
 #todo add loging
 #todo deal with chat name  and username
 #todo think about DTO
+#todo add README

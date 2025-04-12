@@ -3,7 +3,7 @@ from db import Session
 from datetime import datetime
 
 message_buffer = []
-FLUSH_SIZE = 100
+FLUSH_SIZE = 5 #todo just test
 
 def queue_message(data: dict):
     message = Message(
