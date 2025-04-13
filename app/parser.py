@@ -1,14 +1,18 @@
 def get_chat_name(tg, chat_id):
     try:
-        chat = tg.get_chat(chat_id).wait()
-        return chat.get("title") or chat.get("username") or f"Chat {chat_id}"
+        chat_result = tg.get_chat(chat_id)
+        chat_result.wait()
+        chat = chat_result.update
+        return chat.get("title", "Private Chat") or chat.get("username") or f"Chat {chat_id}"
     except Exception as e:
         print(f"⚠️ Failed to get chat name for {chat_id}: {e}")
         return f"Chat {chat_id}"
 
 def get_user_name(tg, user_id):
     try:
-        user = tg.get_user(user_id).wait()
+        user_result = tg.get_user(user_id)
+        user_result.wait()
+        user = user_result.update
         first = user.get("first_name", "")
         last = user.get("last_name", "")
         username = user.get("username", "")
