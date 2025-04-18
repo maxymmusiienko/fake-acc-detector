@@ -47,6 +47,6 @@ threading.Thread(target=run_api, daemon=True).start()
 tg.idle()
 
 #todo add loging
-#todo deal with chat name  and username
+#todo deal with post comments
 #todo think about DTO
 #todo add README

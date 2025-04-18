@@ -19,15 +19,3 @@ class Message(Base):
     original_channel_id = Column(BigInteger)
     original_post_id = Column(BigInteger)
     timestamp = Column(DateTime, default=datetime.now())
-
-class UserStats:
-    def __init__(self, user_id: int, message_count: int, chat_count: int):
-        self.user_id = user_id
-        self.message_count = message_count
-        self.chat_count = chat_count
-
-    def to_dict(self):
-        return {
-            "message_count": self.message_count,
-            "chat_count": self.chat_count
-        }

@@ -1,7 +1,10 @@
 from models import Message
 from db import Session
 from datetime import datetime
+from pytz import timezone
+from logger import get_logger
 
+logger = get_logger(__name__)
 message_buffer = []
 FLUSH_SIZE = 5 #todo just test
 
@@ -17,7 +20,7 @@ def queue_message(data: dict):
         is_comment=data["is_comment"],
         original_channel_id=data.get("original_channel_id"),
         original_post_id=data.get("original_post_id"),
-        timestamp=datetime.now()
+        timestamp = datetime.now(timezone("Europe/Kiev")) #todo mb take date from message
     )
     message_buffer.append(message)
 
@@ -30,5 +33,5 @@ def flush_messages():
     session = Session()
     session.bulk_save_objects(message_buffer)
     session.commit()
-    print(f"✅ Flushed {len(message_buffer)} messages to DB")
+    logger.info(f"✅ Flushed {len(message_buffer)} messages to DB")
     message_buffer.clear()

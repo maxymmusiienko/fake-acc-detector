@@ -4,3 +4,4 @@ SQLAlchemy
 schedule
 fastapi
 uvicorn[standard]
+pytz
