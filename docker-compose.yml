@@ -13,6 +13,14 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/telegram_db
 
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - telegram-bot
+
   postgres:
     image: postgres:15
     container_name: postgres

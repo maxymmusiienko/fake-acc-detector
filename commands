@@ -1,0 +1,4 @@
+sudo docker-compose run --service-ports telegram-bot
+sudo docker-compose down
+sudo docker-compose up --build
+sudo docker exec -it postgres psql -U postgres -d telegram_db

@@ -2,18 +2,29 @@ from parser import extract_message_data
 from storage import queue_message
 from logger import get_logger
 
+def validate_message(data):
+    if data.get("sender_id") is None:
+        return False, "missing sender_id"
+    if not isinstance(data.get("text"), str):
+        return False, "text is not a string"
+    if not data["text"].strip():
+        return False, "text is empty"
+    return True, ""
+
 def make_handler(tg):
+    logger = get_logger(__name__)
+
     def new_message_handler(update):
-        logger = get_logger(__name__)
         if update.get("@type") != "updateNewMessage":
             return
         try:
             data = extract_message_data(tg, update)
-            if data["text"].strip():
+            is_valid, reason = validate_message(data)
+            if is_valid:
                 queue_message(data)
                 logger.debug(f"queued message: {data['text']}")
             else:
-                logger.debug(f"skipping empty message from {data['sender_id']}")
+                logger.debug(f"skipping message: {reason}. Data: {data}")
         except Exception as e:
-            logger.error("❌ Error processing message:", e)
+            logger.error(f"❌ Error processing message: {e}")
     return new_message_handler
