@@ -29,6 +29,7 @@ def queue_message(data: dict):
 
 def flush_messages():
     if not message_buffer:
+        logger.warning("buffer is empty")
         return
     session = Session()
     session.bulk_save_objects(message_buffer)

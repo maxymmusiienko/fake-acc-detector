@@ -3,7 +3,7 @@ from storage import queue_message
 from logger import get_logger
 
 def validate_message(data):
-    if data.get("sender_id") is None:
+    if data.get("user_id") is None:
         return False, "missing sender_id"
     if not isinstance(data.get("text"), str):
         return False, "text is not a string"
@@ -22,9 +22,9 @@ def make_handler(tg):
             is_valid, reason = validate_message(data)
             if is_valid:
                 queue_message(data)
-                logger.debug(f"queued message: {data['text']}")
+                logger.info(f"queued message: {data['text']}")
             else:
-                logger.debug(f"skipping message: {reason}. Data: {data}")
+                logger.info(f"skipping message: {reason}. Data: {data}")
         except Exception as e:
             logger.error(f"❌ Error processing message: {e}")
     return new_message_handler

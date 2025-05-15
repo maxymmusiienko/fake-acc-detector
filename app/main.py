@@ -19,34 +19,17 @@ def run_scheduler():
         schedule.run_pending()
         time.sleep(1)
 
-# Create tables if needed
-Base.metadata.create_all(engine)
+if __name__ == "__main__":
+    # Create tables if needed
+    Base.metadata.create_all(engine)
 
-# Telegram init
-tg = Telegram(
-    api_id=int(os.environ["TG_API_ID"]),
-    api_hash=os.environ["TG_API_HASH"],
-    phone=os.environ["TG_PHONE"],
-    database_encryption_key=os.environ["TG_DB_KEY"],
-)
+    # Start API and scheduler in separate threads
+    api_thread = threading.Thread(target=run_api)
+    scheduler_thread = threading.Thread(target=run_scheduler)
 
-state = tg.login(blocking=False)
+    api_thread.start()
+    scheduler_thread.start()
 
-if state == AuthorizationState.WAIT_CODE:
-    code = input("Enter code: ")
-    tg.send_code(code)
-    state = tg.login(blocking=False)
-
-if state == AuthorizationState.WAIT_PASSWORD:
-    tg.send_password(os.environ["TG_PASSWORD"])
-    state = tg.login(blocking=False)
-
-tg.add_message_handler(make_handler(tg))
-threading.Thread(target=run_scheduler, daemon=True).start()
-threading.Thread(target=run_api, daemon=True).start()
-tg.idle()
-
-#todo add loging
-#todo deal with post comments
-#todo think about DTO
-#todo add README
+    # Optionally join threads to keep the main thread alive
+    api_thread.join()
+    scheduler_thread.join()

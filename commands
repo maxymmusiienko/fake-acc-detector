@@ -2,3 +2,5 @@ sudo docker-compose run --service-ports telegram-bot
 sudo docker-compose down
 sudo docker-compose up --build
 sudo docker exec -it postgres psql -U postgres -d telegram_db
+
+sudo docker exec -e TG_AUTH_CODE= telegram-client python3 /app/app/main.py
